@@ -65,6 +65,7 @@ before_script:
   - cd ../comstack_pm_ui/components/pm-angular
   # Install node things.
   - npm install -g grunt-cli
+  - npm install -g jshint
   - npm install
 
   # Things copied from the protractor travis file.
