@@ -25,7 +25,6 @@ addons:
     - php5-curl
     - php5-gd
     - nodejs
-    - drush
 
 mysql:
   database: comstack_pm_ui
@@ -36,10 +35,15 @@ before_install:
   # navigate out of module directory to prevent blown stack by recursive module lookup
   - cd ../..
 
+  # install drush
+  - pear channel-discover pear.drush.org
+  - pear install drush/drush-5.8.0
+  - phpenv rehash
+
 before_script:
   # create new site, stubbing sendmail path with true to prevent delivery errors and manually resolving drush path
   - mysql -e 'create database comstack_pm_ui'
-  - php -d sendmail_path=`which true` `drush --yes core-quick-drupal --profile=testing --no-server --db-url=mysql://root:@127.0.0.1/comstack_pm_ui --account-name=admin --account-pass=password comstack_pm_ui
+  - php -d sendmail_path=`which true` `pear config-get php_dir`/drush/drush.php --yes core-quick-drupal --profile=testing --no-server --db-url=mysql://root:@127.0.0.1/comstack_pm_ui --account-name=admin --account-pass=password comstack_pm_ui
 
   # reference and enable comstack_pm_ui in build site
   - ln -s $(readlink -e $(cd -)) comstack_pm_ui/drupal/sites/all/modules/comstack_pm_ui
