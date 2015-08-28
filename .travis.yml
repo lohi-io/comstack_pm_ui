@@ -1,7 +1,20 @@
 language: php
 sudo: false
 php:
-  - 5.4
+  - 5.5
+
+matrix:
+  fast_finish: true
+
+addons:
+  apt:
+    packages:
+    - php5-cgi
+    - php5-mysql
+    - php5-cli
+    - php5-curl
+    - php5-gd
+    - nodejs
 
 mysql:
   database: comstack_pm_ui
@@ -16,10 +29,6 @@ before_install:
   - pear channel-discover pear.drush.org
   - pear install drush/drush-5.8.0
   - phpenv rehash
-
-  # install php packages required for running a web server from drush on php 5.3
-  - sudo apt-get update > /dev/null
-  - sudo apt-get install -y --force-yes php5-cgi php5-mysql
 
   # Install node etc.
   - npm install -g grunt-cli
