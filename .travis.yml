@@ -50,11 +50,11 @@ before_install:
 before_script:
   # create new site, stubbing sendmail path with true to prevent delivery errors and manually resolving drush path
   - mysql -e 'create database comstack_pm_ui'
-  - php -d sendmail_path=`which true` ~/.composer/vendor/bin/drush.php --yes qd --profile=minimal --no-server --db-url=mysql://root:@127.0.0.1/drupal --account-name=admin --account-pass=admin
+  - php -d sendmail_path=`which true` ~/.composer/vendor/bin/drush.php --yes qd drupal --profile=minimal --no-server --db-url=mysql://root:@127.0.0.1/drupal --account-name=admin --account-pass=admin
 
   # reference and enable comstack_pm_ui in build site
-  - ln -s $(readlink -e $(cd -)) comstack_pm_ui/drupal/sites/all/modules/comstack_pm_ui
-  - cd comstack_pm_ui/drupal
+  - ln -s /home/travis/build/lohi-io/comstack_pm_ui drupal/drupal/sites/all/modules/comstack_pm_ui
+  - cd drupal/drupal
   # Download a bunch of modules and enable them.
   - drush dl ctools entity entityreference devel
   - drush en -y ctools entity entityreference devel devel_generate
