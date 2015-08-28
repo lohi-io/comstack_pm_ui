@@ -3,6 +3,16 @@ sudo: false
 php:
   - 5.5
 
+env:
+  global:
+    - SAUCE_USERNAME:PzpnsTiGM7Hlz/in/UT6RkSxESLnf3pL23yFkoo3i+CJLcgay7K+zhYTB1365a3dHm6kNysWHEwV+pNaaKecB+M0SfDX7AtBRR4FdDu1A/uMZ0a2xNJ89R3C/yFQtLde6WL8uWJdKvUWZRkWmQpKzqBeWi2jVR5A6PwvtnJUBQHZpy5B9nSdlV/3QfZC7qHAZ50INuxGwz+2O+3NHZz0EqXWVpDFOgq+myPukfv3AaRNkDWSEaNzMbZRXuYvJz4kCwkPz9S1L7QSgk42rauiAMZjdWgFmCwplmf0caTIvwxxFX5RjkpnNA25BtEz/S/7LiyNg83RFlvn/uGBpJ4aqemW5Uh47qH2tYGXiNmESG3MkW4wlk6TQT6rKcvrOoUbouNUDo0j/1zY6+UWyAi6tuM18aJmLtuCSHQAYpjvm/XlFrHIRlYwwQ3Tv7uetG3X0gRoouAwvvs7DSDuS/5A1rdf9xvq9fPQCchpL0H9K9b8USWMB2wDE8J8sxGTlzOTbstf+SQluebCaRm3ssJeYG0B7LWwB5RaqP+hTVHG6qlnHyf5EU9O3ZGnYOI21cmSCgOPrnAa0FCcyHL5JrzHtB2hJUHaIBTEJno6vvQaf2O8CP0KdnM3+x58Z8R/K1o/Ce+Jcco2NxETtEFprmR5Pw/TLTtJrwEUoTwNwz1nxjU=
+    - SAUCE_ACCESS_KEY:Sjp4eeTZEAf/TAPDuB3LbC01PIJGreVljl9lP4SVgVdl0cz+3AFj6QIx/7QJBe4JbIIrdaR3akHor1WAMLd1UyRlcqZg+KyEOF7F418Jl0Lo/Tyhw1JKAaqAzeQdDHqcbd3JTWyXKFj/gqZEVHxTOpazmDetwPlRz0yER0kRoboecTwMeqtTKwjENlaxfK4bDfj8VSacyevnelXv1Ku2ueJvegC8CqznLMBuRApwadI+sV5ocEPoz46hkkpLPy7/JcT7PyiNGIPqEYavpJW5uwSx1T77xqPtAnaN7YZOODUTQohAp95AIIh1Dxlo7Td5/sDSJr8dAW30/hrNV/moH8w5oXZp+0iBEI/Li23Vw31zT9ZCgSAPc3IXfJFnzTOGB34eT+SP8O2B0giR9jN6J0USAWBbeRUWdh8SMRCWMMYgnAj3oNJFO61K9VnBoPeM9GoGj6cCGASqjM//kjdwNcG0Ui8AVij+Dco3X4CjTq/eHxEZVspeIqSO/MQ1WtdYc0aIa/K/aHcWGhP4BO7Ohi64NwOy+pm4C7gaboakfy0X+veesKmhSKmFUIt2J+RfhagBwJ8V9+SoNCqZlsVrH6sZYtPSznM+K8T59ZSczdKTSbrDC2ZFwayxEJy5OZF7VQ0BtXIW6BoMkZ1W+21w8qijVshBmFsUkUsGkdPYpnI=
+    - LOGS_DIR=/tmp/protractor-build/logs
+    - BROWSER_PROVIDER_READY_FILE=/tmp/sauce-connect-ready
+  matrix:
+    - JOB=full
+    - JOB=smoke
+
 matrix:
   fast_finish: true
 
@@ -55,8 +65,20 @@ before_script:
 
   # Protractor time.
   - cd ../comstack_pm_ui/components/pm-angular
+  # Install node things.
+  - npm install -g grunt-cli
+  - npm install
+
+  # Things copied from the protractor travis file.
+  - npm run pretest
+  - mkdir -p $LOGS_DIR
+  - ./scripts/sauce_connect_setup.sh
+  - ./scripts/wait_for_browser_provider.sh
 
 script:
   # Quack.
-  - drush test-run comstack_pm_ui --uri=http://127.0.0.1:8080
+  - ./scripts/testserver.sh
+  - ./scripts/testonsauce.sh
 
+after_script:
+  - ./scripts/print_logs.sh
