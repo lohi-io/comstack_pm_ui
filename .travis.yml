@@ -33,7 +33,7 @@ before_install:
 before_script:
   # create new site, stubbing sendmail path with true to prevent delivery errors and manually resolving drush path
   - mysql -e 'create database comstack_pm_ui'
-  - php -d sendmail_path=`which true` `pear config-get php_dir`/drush/drush.php --yes core-quick-drupal --profile=testing --no-server --db-url=mysql://root:@127.0.0.1/comstack_pm_ui --enable=simpletest --account-name=admin --account-pass=password comstack_pm_ui
+  - php -d sendmail_path=`which true` `pear config-get php_dir`/drush/drush.php --yes core-quick-drupal --profile=testing --no-server --db-url=mysql://root:@127.0.0.1/comstack_pm_ui --account-name=admin --account-pass=password comstack_pm_ui
 
   # reference and enable comstack_pm_ui in build site
   - ln -s $(readlink -e $(cd -)) comstack_pm_ui/drupal/sites/all/modules/comstack_pm_ui
@@ -41,7 +41,7 @@ before_script:
   # Download entity validator.
   - drush dl entity_validator --dev --yes
   # Enable comstack_pm_ui
-  - drush --yes pm-enable comstack_pm_ui
+  - drush en -y ctools entity entityreference comstack comstack_pm restful comstack_pm_ui
 
   # Patch Entity API.
   - cd sites/all/modules/entity
