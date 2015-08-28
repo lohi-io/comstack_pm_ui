@@ -1,0 +1,13 @@
+name = Communications Stack Private Messaging - UI
+description = Provides an Angular inteface to the Private Messaging REST API.
+core = 7.x
+package = Communications Stack
+php = 5.3
+
+dependencies[] = comstack
+dependencies[] = comstack_pm
+dependencies[] = comstack_pm_rest_api
+dependencies[] = restful
+dependencies[] = restful_token_auth
+dependencies[] = entity_validator
+dependencies[] = jquery_update
