@@ -48,7 +48,8 @@ before_script:
   # reference and enable comstack_pm_ui in build site
   - ln -s $(readlink -e $(cd -)) comstack_pm_ui/drupal/sites/all/modules/comstack_pm_ui
   - cd comstack_pm_ui/drupal
-  # Download entity validator.
+  # Download a bunch of modules and enable them.
+  - drush dl ctools entity entityreference
   - drush en -y ctools entity entityreference
   - drush dl entity_validator --dev --yes
   - drush cc all
