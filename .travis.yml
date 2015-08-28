@@ -51,4 +51,6 @@ before_script:
   # Kick off protractor tests.
 
 script:
+  # Quack.
   - drush test-run comstack_pm_ui --uri=http://127.0.0.1:8080
+
