@@ -1,4 +1,5 @@
 language: php
+sudo: false
 php:
   - 5.5
 
@@ -23,6 +24,7 @@ addons:
     - php5-cli
     - php5-curl
     - php5-gd
+    - nodejs
 
 mysql:
   database: comstack_pm_ui
@@ -38,8 +40,6 @@ before_install:
   - pear install drush/drush-5.8.0
   - phpenv rehash
 
-  - sudo apt-get install nodejs
-
 before_script:
   # create new site, stubbing sendmail path with true to prevent delivery errors and manually resolving drush path
   - mysql -e 'create database comstack_pm_ui'
@@ -53,8 +53,12 @@ before_script:
   - drush en -y ctools entity entityreference devel devel_generate
   - drush dl entity_validator --dev --yes
   - drush cc all
+
   # Enable comstack_pm_ui.
   - drush en -y comstack comstack_pm restful comstack_pm_ui
+
+  # Generate some test users.
+  - drush generate-users 50
 
   # Patch Entity API.
   - cd sites/all/modules/entity
@@ -66,7 +70,7 @@ before_script:
   # Install node things.
   - npm install -g grunt-cli
   - npm install -g jshint
-  - sudo npm install
+  - npm install
 
   # Things copied from the protractor travis file.
   - mkdir -p $LOGS_DIR
