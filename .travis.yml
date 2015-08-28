@@ -63,7 +63,7 @@ before_script:
 
   # Protractor time.
   - cd ../comstack_pm_ui/components/
-  - chmod -R a+x pm-angular
+  - chmod -R 777 pm-angular
   - cd pm-angular
   # Install node things.
   - npm install -g grunt-cli
