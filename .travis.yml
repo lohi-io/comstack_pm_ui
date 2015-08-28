@@ -62,7 +62,7 @@ before_script:
   - patch -p1 < 2086225-entity-access-check-18.patch
 
   # start a web server on port 8080, run in the background; wait for initialization
-  - drush runserver 127.0.0.1:8080 &
+  - drush runserver 127.0.0.1:8080 > /dev/null 2>&1 &
   - until netstat -an 2>/dev/null | grep '8080.*LISTEN'; do true; done
 
   # Protractor time.
