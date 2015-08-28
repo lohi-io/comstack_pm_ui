@@ -62,9 +62,7 @@ before_script:
   - patch -p1 < 2086225-entity-access-check-18.patch
 
   # Protractor time.
-  - cd ../comstack_pm_ui/components/
-  - chmod -R 777 pm-angular
-  - cd pm-angular
+  - cd ../comstack_pm_ui/components/pm-angular
   # Install node things.
   - npm install -g grunt-cli
   - npm install -g jshint
@@ -72,7 +70,6 @@ before_script:
 
   # Things copied from the protractor travis file.
   - mkdir -p $LOGS_DIR
-  - ./scripts/print_logs.sh
   - npm run pretest
   - ./scripts/sauce_connect_setup.sh
   - ./scripts/wait_for_browser_provider.sh
