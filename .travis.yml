@@ -65,10 +65,6 @@ before_script:
   - curl -O https://www.drupal.org/files/issues/2086225-entity-access-check-18.patch
   - patch -p1 < 2086225-entity-access-check-18.patch
 
-  # start a web server on port 8080, run in the background; wait for initialization
-  - drush runserver 127.0.0.1:8080 &
-  - until netstat -an 2>/dev/null | grep '8080.*LISTEN'; do true; done
-
   # Protractor time.
   - cd ../comstack_pm_ui/components/pm-angular
   # Install node things.
@@ -81,6 +77,10 @@ before_script:
   - npm run pretest
   - ./scripts/sauce_connect_setup.sh
   - ./scripts/wait_for_browser_provider.sh
+
+  # start a web server on port 8080, run in the background; wait for initialization
+  - drush runserver 127.0.0.1:8080 &
+  - until netstat -an 2>/dev/null | grep '8080.*LISTEN'; do true; done
 
 script:
   # Quack.
