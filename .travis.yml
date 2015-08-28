@@ -38,7 +38,7 @@ before_install:
   - pear install drush/drush-5.8.0
   - phpenv rehash
 
-  -sudo apt-get install nodejs
+  - sudo apt-get install nodejs
 
 before_script:
   # create new site, stubbing sendmail path with true to prevent delivery errors and manually resolving drush path
