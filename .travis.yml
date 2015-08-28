@@ -55,7 +55,7 @@ before_script:
   - drush cc all
 
   # Enable comstack_pm_ui.
-  - drush en -y comstack comstack_pm restful comstack_pm_ui
+  #- drush en -y comstack comstack_pm restful comstack_pm_ui
 
   # Generate some test users.
   - drush generate-users 50
