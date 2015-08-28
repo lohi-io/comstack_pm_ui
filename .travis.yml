@@ -37,7 +37,7 @@ before_install:
 
   # install drush
   - pear channel-discover pear.drush.org
-  - pear install drush/drush-5.8.0
+  - pear install drush/drush-6.2.0.0
   - phpenv rehash
 
 before_script:
