@@ -41,7 +41,8 @@ before_script:
   # Download entity validator.
   - drush dl entity_validator --dev --yes
   # Enable comstack_pm_ui
-  - drush en -y ctools entity entityreference comstack comstack_pm restful comstack_pm_ui
+  - drush en -y ctools entity entityreference
+  - drush en -y comstack comstack_pm restful comstack_pm_ui
 
   # Patch Entity API.
   - cd sites/all/modules/entity
