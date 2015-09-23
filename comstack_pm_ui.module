@@ -35,7 +35,7 @@ function comstack_pm_ui_libraries_info() {
     ),
     'path' => 'app',
     'files' => array(
-      'js' => array('js/app.js'),
+      'js' => array('js/ComstackPMApp.js'),
       'css' => array('css/app.css'),
     ),
     'dependencies' => array(
@@ -70,7 +70,7 @@ function comstack_pm_ui_menu() {
 function comstack_pm_ui_add_js() {
   // Not sure on the best way to do this...
   $settings = drupal_json_encode(variable_get('comstack_pm_ui_app_settings', comstack_pm_ui_app_settings_default()));
-  drupal_add_js("var Comstack = Comstack || {}; var Comstack['PMApp'] = {}; var Comstack.PMApp.Settings = $settings;", array(
+  drupal_add_js("var Comstack = Comstack || {};Comstack.PMApp = {};Comstack.PMApp.Settings = $settings;", array(
     'type' => 'inline',
     'scope' => 'header',
   ));
@@ -92,7 +92,8 @@ function comstack_pm_ui_page_callback() {
 }
 
 function comstack_pm_ui_app_settings_default() {
+  // For now lets just do URL, and try for https if possible.
   return array(
-    'api_url' => url('api', array('absolute' => TRUE)),
+    'api_url' => url('api', array('absolute' => TRUE, 'https' => TRUE)),
   );
 }
