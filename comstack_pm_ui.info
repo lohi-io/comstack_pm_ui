@@ -6,8 +6,9 @@ php = 5.3
 
 dependencies[] = comstack
 dependencies[] = comstack_pm
+dependencies[] = comstack_friends
 dependencies[] = comstack_pm_rest_api
 dependencies[] = restful
-dependencies[] = restful_token_auth
 dependencies[] = entity_validator
 dependencies[] = jquery_update
+dependencies[] = libraries

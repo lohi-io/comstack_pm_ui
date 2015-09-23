@@ -4,3 +4,95 @@
  * @file
  * comstack_pm_ui.module
  */
+
+/**
+ * Implements hook_permission().
+ */
+function comstack_pm_ui_permission() {
+  return array(
+    'access ComstackPMApp' => array(
+      'title' => t('Access the Comstack Private Messaging UI'),
+      'description' => t('Allows users access to the Private Messaging UI which is an Angular App. For this to work permissions for Comstack Private Messaging must be configured properly.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_libraries_info().
+ */
+function comstack_pm_ui_libraries_info() {
+  $libraries = array();
+
+  // The AngularJS library is defined by the comstack module (unless it's been)
+  // told not to.
+  $libraries['ComstackPMApp'] = array(
+    'name' => 'ComstackPMApp',
+    'vendor url' => 'https://github.com/lohi-io/ComstackPMApp/',
+    'version arguments' => array(
+      'file' => 'package.json',
+      'pattern' => '/"version": "([0-9.]+)",/',
+      'lines' => 5,
+    ),
+    'path' => 'app',
+    'files' => array(
+      'js' => array('js/app.js'),
+      'css' => array('css/app.css'),
+    ),
+    'dependencies' => array(
+      'angularjs (>=1.4.5)',
+      'ui-router (>=0.2.15)',
+      'angular-resource',
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function comstack_pm_ui_menu() {
+  $items = array();
+
+  $path = variable_get('comstack_pm_ui_app_path', 'messaging');
+  $items[$path] = array(
+    'title' => 'Private Messaging',
+    'page callback' => 'comstack_pm_ui_page_callback',
+    'access arguments' => array('access ComstackPMApp'),
+  );
+
+  return $items;
+}
+
+/**
+ * Add the necessary settings and JavaScript to the page to pass to the app.
+ */
+function comstack_pm_ui_add_js() {
+  // Not sure on the best way to do this...
+  $settings = drupal_json_encode(variable_get('comstack_pm_ui_app_settings', comstack_pm_ui_app_settings_default()));
+  drupal_add_js("var Comstack = Comstack || {}; var Comstack['PMApp'] = {}; var Comstack.PMApp.Settings = $settings;", array(
+    'type' => 'inline',
+    'scope' => 'header',
+  ));
+
+  // Finally, add the library.
+  libraries_load('ComstackPMApp');
+}
+
+/**
+ * Page callback for the App.
+ */
+function comstack_pm_ui_page_callback() {
+  comstack_pm_ui_add_js();
+
+  return theme('comstack_angular', array(
+    'app' => 'ComstackPmApp',
+    'ui_view' => TRUE,
+  ));
+}
+
+function comstack_pm_ui_app_settings_default() {
+  return array(
+    'api_url' => url('api', array('absolute' => TRUE)),
+  );
+}
