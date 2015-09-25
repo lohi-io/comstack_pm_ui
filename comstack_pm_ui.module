@@ -86,14 +86,26 @@ function comstack_pm_ui_page_callback() {
   comstack_pm_ui_add_js();
 
   return theme('comstack_angular', array(
-    'app' => 'ComstackPmApp',
+    'app' => 'ComstackPMApp',
     'ui_view' => TRUE,
   ));
 }
 
 function comstack_pm_ui_app_settings_default() {
   // For now lets just do URL, and try for https if possible.
+  // @todo
+  // v1 shouldn't be there but we'll come back to this, the App should be
+  // specifying the API version to use on its side.
+  global $user;
+
+  // Replacements.
+  $account_url = url('user/', array('absolute' => TRUE, 'https' => TRUE)) . '@user_id/account-settings';
+
   return array(
-    'api_url' => url('api', array('absolute' => TRUE, 'https' => TRUE)),
+    'api_url' => url('api/v1', array('absolute' => TRUE, 'https' => TRUE)),
+    'strings' => array(
+      'text__read_only' => t('You\'re currently opted out of private messaging, <a href="!account_url">click here</a> to go the the account settings form.', array('!account_url' => $account_url)),
+      'form__new_conversation__header' => t('You must be friends with a person before you can send them messages. <a href="!account_url">Find and add friends</a>', array('!account_url' => $account_url)),
+    ),
   );
 }
