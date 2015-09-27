@@ -42,6 +42,7 @@ function comstack_pm_ui_libraries_info() {
       'angularjs (>=1.4.5)',
       'ui-router (>=0.2.15)',
       'angular-resource',
+      'moment',
     ),
   );
 
@@ -99,13 +100,16 @@ function comstack_pm_ui_app_settings_default() {
   global $user;
 
   // Replacements.
-  $account_url = url('user/', array('absolute' => TRUE, 'https' => TRUE)) . '@user_id/account-settings';
+  $account_url = url('user/', array('absolute' => TRUE, 'https' => TRUE)) . '@user_id@/account-settings';
+  $friends_url = url('friends/', array('absolute' => TRUE, 'https' => TRUE)) . '@user_id@';
 
   return array(
     'api_url' => url('api/v1', array('absolute' => TRUE, 'https' => TRUE)),
+    'library_path' => url(libraries_get_path('ComstackPMApp'), array('absolute' => TRUE, 'https' => TRUE)),
     'strings' => array(
       'text__read_only' => t('You\'re currently opted out of private messaging, <a href="!account_url">click here</a> to go the the account settings form.', array('!account_url' => $account_url)),
       'form__new_conversation__header' => t('You must be friends with a person before you can send them messages. <a href="!account_url">Find and add friends</a>', array('!account_url' => $account_url)),
+      'text__no_conversations' => t('!friends_url', array('!friends_url' => $friends_url)),
     ),
   );
 }

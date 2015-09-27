@@ -12,3 +12,4 @@ dependencies[] = restful
 dependencies[] = entity_validator
 dependencies[] = jquery_update
 dependencies[] = libraries
+dependencies[] = moment
