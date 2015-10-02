@@ -4,6 +4,7 @@ core = 7.x
 package = Communications Stack
 php = 5.3
 
+dependencies[] = message
 dependencies[] = comstack
 dependencies[] = comstack_pm
 dependencies[] = comstack_friends
@@ -13,3 +14,4 @@ dependencies[] = entity_validator
 dependencies[] = jquery_update
 dependencies[] = libraries
 dependencies[] = moment
+dependencies[] = modernizr

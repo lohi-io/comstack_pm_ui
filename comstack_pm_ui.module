@@ -23,6 +23,78 @@ function comstack_pm_ui_permission() {
 function comstack_pm_ui_libraries_info() {
   $libraries = array();
 
+  $libraries['ng-tags-input'] = array(
+    'name' => 'ngTagsInput',
+    'vendor url' => 'http://mbenford.github.io/ngTagsInput',
+    'version arguments' => array(
+      'file' => 'ng-tags-input.js',
+      'pattern' => '/v([0-9.]+)/',
+      'lines' => 2,
+    ),
+    'files' => array(
+      'js' => array('ng-tags-input.js'),
+      'css' => array(
+        'ng-tags-input.css',
+        'ng-tags-input.bootstrap.css',
+      ),
+    ),
+    'variants' => array(
+      'minified' => array(
+        'files' => array(
+          'js' => array('ng-tags-input.min.js'),
+          'css' => array(
+            'ng-tags-input.min.css',
+            'ng-tags-input.bootstrap.min.css',
+          ),
+        ),
+      ),
+    ),
+    'dependencies' => array(
+      'angularjs (>=1.3.0)',
+    ),
+  );
+
+  $libraries['angularjs-scroll-glue'] = array(
+    'name' => 'angularjs-scroll-glue',
+    'vendor url' => 'https://github.com/Luegg/angularjs-scroll-glue',
+    'version arguments' => array(
+      'file' => 'scrollglue.js',
+      'pattern' => '/version ([0-9.]+)/',
+      'lines' => 5,
+    ),
+    'path' => 'src',
+    'files' => array(
+      'js' => array('scrollglue.js'),
+    ),
+    'dependencies' => array(
+      'angularjs',
+    ),
+  );
+
+  // This library is a pest with inconsistent naming hmph.
+  $libraries['angular-bootstrap'] = array(
+    'name' => 'Angular UI Bootstrap',
+    'vendor url' => 'http://angular-ui.github.io/bootstrap/',
+    'version arguments' => array(
+      'file' => 'ui-bootstrap-tpls.js',
+      'pattern' => '/Version: ([0-9.]+)/',
+      'lines' => 6,
+    ),
+    'files' => array(
+      'js' => array('ui-bootstrap-tpls.js'),
+    ),
+    'variants' => array(
+      'minified' => array(
+        'files' => array(
+          'js' => array('ui-bootstrap-tpls.min.js'),
+        ),
+      ),
+    ),
+    'dependencies' => array(
+      'angularjs',
+    ),
+  );
+
   // The AngularJS library is defined by the comstack module (unless it's been)
   // told not to.
   $libraries['ComstackPMApp'] = array(
@@ -43,6 +115,10 @@ function comstack_pm_ui_libraries_info() {
       'ui-router (>=0.2.15)',
       'angular-resource',
       'moment',
+      'modernizr',
+      'angularjs-scroll-glue',
+      'ng-tags-input',
+      'angular-bootstrap',
     ),
   );
 
@@ -70,7 +146,7 @@ function comstack_pm_ui_menu() {
  */
 function comstack_pm_ui_add_js() {
   // Not sure on the best way to do this...
-  $settings = drupal_json_encode(variable_get('comstack_pm_ui_app_settings', comstack_pm_ui_app_settings_default()));
+  $settings = drupal_json_encode(comstack_pm_ui_app_get_settings());
   drupal_add_js("var Comstack = Comstack || {};Comstack.PMApp = {};Comstack.PMApp.Settings = $settings;", array(
     'type' => 'inline',
     'scope' => 'header',
@@ -92,7 +168,7 @@ function comstack_pm_ui_page_callback() {
   ));
 }
 
-function comstack_pm_ui_app_settings_default() {
+function comstack_pm_ui_app_get_settings() {
   // For now lets just do URL, and try for https if possible.
   // @todo
   // v1 shouldn't be there but we'll come back to this, the App should be
@@ -103,7 +179,7 @@ function comstack_pm_ui_app_settings_default() {
   $account_url = url('user/', array('absolute' => TRUE, 'https' => TRUE)) . '@user_id@/account-settings';
   $friends_url = url('friends/', array('absolute' => TRUE, 'https' => TRUE)) . '@user_id@';
 
-  return array(
+  $settings = array(
     'api_url' => url('api/v1', array('absolute' => TRUE, 'https' => TRUE)),
     'library_path' => url(libraries_get_path('ComstackPMApp'), array('absolute' => TRUE, 'https' => TRUE)),
     'strings' => array(
@@ -112,4 +188,9 @@ function comstack_pm_ui_app_settings_default() {
       'text__no_conversations' => t('!friends_url', array('!friends_url' => $friends_url)),
     ),
   );
+
+  // Let other modules alter things.
+  drupal_alter('comstack_pm_ui_settings', $settings);
+
+  return $settings;
 }
