@@ -95,6 +95,59 @@ function comstack_pm_ui_libraries_info() {
     ),
   );
 
+  $libraries['angular-poller'] = array(
+    'name' => 'angular-poller',
+    'vendor url' => 'https://github.com/emmaguo/angular-poller/releases',
+    'version arguments' => array(
+      'file' => 'package.json',
+      'pattern' => '/"version": "([0-9.]+)",/',
+      'lines' => 5,
+    ),
+    'files' => array(
+      'js' => array('angular-poller.js'),
+    ),
+    'variants' => array(
+      'minified' => array(
+        'files' => array(
+          'js' => array('angular-poller.min.js'),
+        ),
+      ),
+    ),
+    'dependencies' => array(
+      'angularjs',
+    ),
+  );
+
+  $libraries['ui-scroll'] = array(
+    'name' => 'angular-ui-scroll',
+    'vendor url' => 'https://github.com/angular-ui/ui-scroll/releases',
+    'version arguments' => array(
+      'file' => 'package.json',
+      'pattern' => '/"version": "([0-9.]+)",/',
+      'lines' => 5,
+    ),
+    'path' => 'dist',
+    'files' => array(
+      'js' => array(
+        'ui-scroll.js',
+        'ui-scroll-jqlite.js',
+      ),
+    ),
+    'variants' => array(
+      'minified' => array(
+        'files' => array(
+          'js' => array(
+            'ui-scroll.min.js',
+            'ui-scroll-jqlite.min.js',
+          ),
+        ),
+      ),
+    ),
+    'dependencies' => array(
+      'angularjs',
+    ),
+  );
+
   // The AngularJS library is defined by the comstack module (unless it's been)
   // told not to.
   $libraries['ComstackPMApp'] = array(
@@ -119,6 +172,8 @@ function comstack_pm_ui_libraries_info() {
       'angularjs-scroll-glue',
       'ng-tags-input',
       'angular-bootstrap',
+      'angular-poller',
+      'ui-scroll',
     ),
   );
 
@@ -187,7 +242,6 @@ function comstack_pm_ui_app_get_settings() {
     'strings' => array(
       'text__read_only' => t('You\'re currently opted out of private messaging, <a href="!account_url">click here</a> to go the the account settings form.', array('!account_url' => $account_url)),
       'form__new_conversation__header' => t('You must be friends with a person before you can send them messages. <a href="!account_url">Find and add friends</a>', array('!account_url' => $account_url)),
-      'text__no_conversations' => t('!friends_url', array('!friends_url' => $friends_url)),
     ),
   );
 
