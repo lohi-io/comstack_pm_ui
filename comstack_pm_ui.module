@@ -181,6 +181,32 @@ function comstack_pm_ui_libraries_info() {
 }
 
 /**
+ * Implements hook_js_alter().
+ */
+function comstack_pm_ui_js_alter(&$javascript) {
+  $ui_scroll_path = libraries_get_path('ui-scroll');
+
+  if (isset($javascript["$ui_scroll_path/dist/ui-scroll.js"]) || isset($javascript["$ui_scroll_path/dist/ui-scroll.min.js"])) {
+    $min = isset($javascript["$ui_scroll_path/dist/ui-scroll.min.js"]) ? '.min' : NULL;
+
+    $javascript["$ui_scroll_path/dist/ui-scroll$min.js"]['group'] = -195;
+    $javascript["$ui_scroll_path/dist/ui-scroll$min.js"]['weight'] = -195;
+
+    $javascript["$ui_scroll_path/dist/ui-scroll-jqlite$min.js"]['group'] = -190;
+    $javascript["$ui_scroll_path/dist/ui-scroll-jqlite$min.js"]['weight'] = -190;
+  }
+
+  $jquery_path = drupal_get_path('module', 'jquery_update');
+  $jquery_version = variable_get('jquery_update_jquery_version', '1.10');
+
+  if (isset($javascript["$jquery_path/replace/jquery/$jquery_version/jquery.js"]) || isset($javascript["$jquery_path/replace/jquery/$jquery_version/jquery.min.js"])) {
+    $jq_min = isset($javascript["$jquery_path/replace/jquery/$jquery_version/jquery.min.js"]) ? '.min' : NULL;
+    $javascript["$jquery_path/replace/jquery/$jquery_version/jquery$jq_min.js"]['group'] = -205;
+    $javascript["$jquery_path/replace/jquery/$jquery_version/jquery$jq_min.js"]['weight'] = -205;
+  }
+}
+
+/**
  * Implements hook_menu().
  */
 function comstack_pm_ui_menu() {
@@ -220,6 +246,7 @@ function comstack_pm_ui_page_callback() {
   return theme('comstack_angular', array(
     'app' => 'ComstackPMApp',
     'ui_view' => TRUE,
+    'apply_scroll' => TRUE,
   ));
 }
 
@@ -239,9 +266,11 @@ function comstack_pm_ui_app_get_settings() {
     'api_url' => url('api/v1', array('absolute' => TRUE, 'https' => TRUE)),
     'library_path' => url(libraries_get_path('ComstackPMApp'), array('absolute' => TRUE, 'https' => TRUE)),
     'csrf_token' => restful_csrf_session_token()['X-CSRF-Token'],
+    'max_participants' => variable_get('comstack_pm_max_participants', 2),
     'strings' => array(
       'text__read_only' => t('You\'re currently opted out of private messaging, <a href="!account_url">click here</a> to go the the account settings form.', array('!account_url' => $account_url)),
-      'form__new_conversation__header' => t('You must be friends with a person before you can send them messages. <a href="!account_url">Find and add friends</a>', array('!account_url' => $account_url)),
+      'text__no_conversations' => t('<p>You\'ve not been part of any conversations yet!</p><p>Make sure that you\'ve <a href="!friends_url">added your friends</a> then start a new conversation.</p>', array('!friends_url' => $friends_url)),
+      'form__new_conversation__header' => t('You must be friends with a person before you can send them messages. <a href="!friends_url">Find and add friends</a>', array('!friends_url' => $friends_url)),
     ),
   );
 
