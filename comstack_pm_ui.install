@@ -10,4 +10,5 @@
  */
 function comstack_pm_ui_uninstall() {
   variable_del('comstack_pm_ui_app_path');
+  variable_del('comstack_pm_ui_button_include_icon');
 }

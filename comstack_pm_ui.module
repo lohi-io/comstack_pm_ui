@@ -280,3 +280,87 @@ function comstack_pm_ui_app_get_settings() {
 
   return $settings;
 }
+
+/**
+ * Return the markup for a message button.
+ */
+function comstack_pm_ui_get_button($account) {
+  global $user;
+
+  // No anon, no.
+  if (!$user->uid) {
+    return;
+  }
+
+  $preference_active = variable_get('comstack_pm_preferences__enabled__provide', FALSE) && module_exists('user_preferences');
+  $show_button = TRUE;
+  $disable_button = FALSE;
+  $wrapper_attributes = array(
+    'class' => array('cs-pm-ib', 'cs-pm-wrapper__button'),
+  );
+  $wrapper_tooltip = NULL;
+
+  // Do basic access and preference checks.
+  if (!user_access('access ComstackPMApp') || !user_preferences($account->uid, 'comstack_pm_enabled')) {
+    $show_button = FALSE;
+  }
+  // Check the current user has opted in.
+  if (!$preference_active || $preference_active && !user_preferences($user->uid, 'comstack_pm_enabled')) {
+    $disable_button = TRUE;
+    $wrapper_tooltip = t("You've not got private messaging enabled");
+  }
+  // Check that this user is available
+  if (!comstack_pm_validate_recipients(array($account->uid), $user->uid)) {
+    $disable_button = TRUE;
+    $wrapper_tooltip = t('You must be friends before you can send this user a message');
+  }
+
+  if (!$show_button) {
+    return;
+  }
+
+  if ($wrapper_tooltip) {
+    $wrapper_attributes['data-toggle'] = 'tooltip';
+    $wrapper_attributes['title'] = $wrapper_tooltip;
+  }
+
+  // Construct the markup. Reminder, all attributes will be run through
+  // check_plain.
+  $text = t('Message');
+  $attributes = array(
+    'class' => array('btn', 'btn-primary', 'cs-pm-message'),
+    'data-uid' => $account->uid,
+    'data-username' => $account->name,
+    'data-action' => 'message',
+  );
+
+  // Conditional business.
+  if (variable_get('comstack_pm_ui_button_include_icon', TRUE)) {
+    $text = '<span class="icomoon icomoon-speech-bubble cs-pm-icon__message"></span> ' . $text;
+  }
+  if ($disable_button) {
+    $attributes['class'][] = 'btn-disabled';
+    $attributes['disabled'] = 'disabled';
+  }
+  else {
+    $path = variable_get('comstack_pm_ui_app_path', 'messaging');
+    $attributes['href'] = url($path, array('query' => array('recipients' => $account->uid), 'https' => TRUE, 'fragment' => '/message'));
+  }
+
+  return '<span' . drupal_attributes($wrapper_attributes) . '><a' . drupal_attributes($attributes) . '>' . $text . '</a></span>';
+}
+
+/**
+ * Implements hook_comstack_friends_buttons_alter().
+ */
+function comstack_pm_ui_comstack_friends_buttons_alter(&$buttons, $context) {
+  // Setup vars.
+  $account = $context['account'];
+
+  $button = comstack_pm_ui_get_button($account);
+
+  // Add to the buttons array.
+  if ($button) {
+    $buttons = array_splice($buttons, 1, 0, array($button));
+  }
+}
