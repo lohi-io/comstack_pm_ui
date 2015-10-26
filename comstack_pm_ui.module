@@ -188,6 +188,16 @@ function comstack_pm_ui_libraries_info() {
 }
 
 /**
+* Implements hook_views_api().
+*/
+function comstack_pm_ui_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'comstack_pm_ui'),
+  );
+}
+
+/**
  * Implements hook_js_alter().
  */
 function comstack_pm_ui_js_alter(&$javascript) {
@@ -291,8 +301,11 @@ function comstack_pm_ui_app_get_settings() {
 /**
  * Return the markup for a message button.
  */
-function comstack_pm_ui_get_button($account) {
-  global $user;
+function comstack_pm_ui_get_button($account, $user = NULL) {
+  if (!$user) {
+    global $user;
+    $user = $user;
+  }
 
   // No anon, no.
   if (!$user->uid) {
@@ -354,7 +367,7 @@ function comstack_pm_ui_get_button($account) {
   }
   else {
     $path = variable_get('comstack_pm_ui_app_path', 'messaging');
-    $attributes['href'] = url($path, array('query' => array('recipients' => $account->uid), 'https' => TRUE, 'fragment' => '/message'));
+    $attributes['href'] = url($path, array('https' => TRUE, 'fragment' => '/message/' . $account->uid));
   }
 
   drupal_add_js(array('comstack_pm_ui' => array('tooltips' => TRUE)), 'setting');

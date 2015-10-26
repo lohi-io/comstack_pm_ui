@@ -15,3 +15,5 @@ dependencies[] = jquery_update
 dependencies[] = libraries
 dependencies[] = moment
 dependencies[] = modernizr
+
+files[] = views/handlers/comstack_pm_ui_handler_field_users_link_message.inc
