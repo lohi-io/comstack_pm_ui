@@ -18,6 +18,13 @@ function comstack_pm_ui_permission() {
 }
 
 /**
+ * Implements hook_init().
+ */
+function comstack_pm_ui_init() {
+  drupal_add_js(drupal_get_path('module', 'comstack_pm_ui') . '/js/comstack_pm_ui.js', array('every_page' => TRUE));
+}
+
+/**
  * Implements hook_libraries_info().
  */
 function comstack_pm_ui_libraries_info() {
@@ -310,7 +317,10 @@ function comstack_pm_ui_get_button($account) {
     $wrapper_tooltip = t("You've not got private messaging enabled");
   }
   // Check that this user is available
-  if (!comstack_pm_validate_recipients(array($account->uid), $user->uid)) {
+  try {
+    comstack_pm_validate_recipients(array($account->uid), $user->uid);
+  }
+  catch (\ComstackUnavailableUserException $e) {
     $disable_button = TRUE;
     $wrapper_tooltip = t('You must be friends before you can send this user a message');
   }
@@ -347,6 +357,8 @@ function comstack_pm_ui_get_button($account) {
     $attributes['href'] = url($path, array('query' => array('recipients' => $account->uid), 'https' => TRUE, 'fragment' => '/message'));
   }
 
+  drupal_add_js(array('comstack_pm_ui' => array('tooltips' => TRUE)), 'setting');
+
   return '<span' . drupal_attributes($wrapper_attributes) . '><a' . drupal_attributes($attributes) . '>' . $text . '</a></span>';
 }
 
@@ -361,6 +373,9 @@ function comstack_pm_ui_comstack_friends_buttons_alter(&$buttons, $context) {
 
   // Add to the buttons array.
   if ($button) {
-    $buttons = array_splice($buttons, 1, 0, array($button));
+    $block = $buttons['block_button'];
+    unset($buttons['block_button']);
+    $buttons['message_button'] = $button;
+    $buttons['block_button'] = $block;
   }
 }
