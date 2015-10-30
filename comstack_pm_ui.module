@@ -25,6 +25,20 @@ function comstack_pm_ui_init() {
 }
 
 /**
+ * Implements hook_theme().
+ */
+function comstack_pm_ui_theme($existing, $type, $theme, $path) {
+  return array(
+    'comstack_pm_ui_message_button' => array(
+      'variables' => array(
+        'account' => NULL,
+        'user' => NULL,
+      ),
+    ),
+  );
+}
+
+/**
  * Implements hook_libraries_info().
  */
 function comstack_pm_ui_libraries_info() {
@@ -155,6 +169,30 @@ function comstack_pm_ui_libraries_info() {
     ),
   );
 
+  $libraries['isMobile'] = array(
+    'name' => 'isMobile',
+    'vendor url' => 'https://github.com/kaimallea/isMobile/releases',
+    'version arguments' => array(
+      'file' => 'package.json',
+      'pattern' => '/"version": "([0-9.]+)",/',
+      'lines' => 5,
+    ),
+    'files' => array(
+      'js' => array(
+        'isMobile.js',
+      ),
+    ),
+    'variants' => array(
+      'minified' => array(
+        'files' => array(
+          'js' => array(
+            'isMobile.min.js',
+          ),
+        ),
+      ),
+    ),
+  );
+
   // The AngularJS library is defined by the comstack module (unless it's been)
   // told not to.
   $libraries['ComstackPMApp'] = array(
@@ -181,6 +219,7 @@ function comstack_pm_ui_libraries_info() {
       'angular-bootstrap',
       'angular-poller',
       'ui-scroll',
+      'isMobile',
     ),
   );
 
@@ -301,8 +340,10 @@ function comstack_pm_ui_app_get_settings() {
 /**
  * Return the markup for a message button.
  */
-function comstack_pm_ui_get_button($account, $user = NULL) {
-  if (!$user) {
+function theme_comstack_pm_ui_message_button($variables) {
+  extract($variables);
+
+  if (!isset($user)) {
     global $user;
     $user = $user;
   }
@@ -331,7 +372,10 @@ function comstack_pm_ui_get_button($account, $user = NULL) {
   }
   // Check that this user is available
   try {
-    comstack_pm_validate_recipients(array($account->uid), $user->uid);
+    if (!comstack_pm_validate_recipients(array($account->uid), $user->uid)) {
+      $disable_button = TRUE;
+      $wrapper_tooltip = t('You must be friends before you can send this user a message');
+    }
   }
   catch (\ComstackUnavailableUserException $e) {
     $disable_button = TRUE;
@@ -382,7 +426,7 @@ function comstack_pm_ui_comstack_friends_buttons_alter(&$buttons, $context) {
   // Setup vars.
   $account = $context['account'];
 
-  $button = comstack_pm_ui_get_button($account);
+  $button = theme('comstack_pm_ui_message_button', array('account' => $account));
 
   // Add to the buttons array.
   if ($button) {
