@@ -193,6 +193,28 @@ function comstack_pm_ui_libraries_info() {
     ),
   );
 
+  $libraries['ng-focus-if'] = array(
+    'name' => 'ng-focus-if',
+    'vendor url' => 'https://github.com/hiebj/ng-focus-if/releases',
+    'version arguments' => array(
+      'file' => 'package.json',
+      'pattern' => '/"version": "([0-9.]+)",/',
+      'lines' => 3,
+    ),
+    'files' => array(
+      'js' => 'focusIf.js',
+    ),
+    'variants' => array(
+      'minified' => array(
+        'files' => array(
+          'js' => array(
+            'focusIf.min.js,'
+          ),
+        ),
+      ),
+    ),
+  );
+
   // The AngularJS library is defined by the comstack module (unless it's been)
   // told not to.
   $libraries['ComstackPMApp'] = array(
@@ -220,6 +242,7 @@ function comstack_pm_ui_libraries_info() {
       'angular-poller',
       'ui-scroll',
       'isMobile',
+      'ng-focus-if',
     ),
   );
 
@@ -325,9 +348,7 @@ function comstack_pm_ui_app_get_settings() {
     'csrf_token' => restful_csrf_session_token()['X-CSRF-Token'],
     'max_participants' => variable_get('comstack_pm_max_participants', 2),
     'strings' => array(
-      'text__read_only' => t('You\'re currently opted out of private messaging, <a href="!account_url">click here</a> to go the the account settings form.', array('!account_url' => $account_url)),
-      'text__no_conversations' => t('<p>You\'ve not been part of any conversations yet!</p><p>Make sure that you\'ve <a href="!friends_url">added your friends</a> then start a new conversation.</p>', array('!friends_url' => $friends_url)),
-      'form__new_conversation__header' => t('You must be friends with a person before you can send them messages. <a href="!friends_url">Find and add friends</a>', array('!friends_url' => $friends_url)),
+      'text__forced_read_only' => check_plain(variable_get('comstack_pm_killswitch__text', 'Private messaging has been temporarily disabled.')),
     ),
   );
 
