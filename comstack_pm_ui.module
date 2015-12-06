@@ -202,13 +202,39 @@ function comstack_pm_ui_libraries_info() {
       'lines' => 3,
     ),
     'files' => array(
-      'js' => 'focusIf.js',
+      'js' => array(
+        'focusIf.js',
+      ),
     ),
     'variants' => array(
       'minified' => array(
         'files' => array(
           'js' => array(
             'focusIf.min.js,'
+          ),
+        ),
+      ),
+    ),
+  );
+
+  $libraries['ng-idle'] = array(
+    'name' => 'ng-idle',
+    'vendor url' => 'https://github.com/HackedByChinese/ng-idle/releases',
+    'version arguments' => array(
+      'file' => 'package.json',
+      'pattern' => '/"version": "([0-9.]+)",/',
+      'lines' => 3,
+    ),
+    'files' => array(
+      'js' => array(
+        'angular-idle.js',
+      ),
+    ),
+    'variants' => array(
+      'minified' => array(
+        'files' => array(
+          'js' => array(
+            'angular-idle.min.js,'
           ),
         ),
       ),
@@ -243,6 +269,7 @@ function comstack_pm_ui_libraries_info() {
       'ui-scroll',
       'isMobile',
       'ng-focus-if',
+      'ng-idle',
     ),
   );
 
@@ -326,6 +353,7 @@ function comstack_pm_ui_page_callback() {
     'app' => 'ComstackPMApp',
     'ui_view' => TRUE,
     'apply_scroll' => TRUE,
+    'apply_idle' => TRUE,
   ));
 }
 
